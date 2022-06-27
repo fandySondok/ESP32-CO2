@@ -6,10 +6,10 @@ This project was created to monitor indoor CO2 concentration using the SCD30 sen
 
 ## Feature
 
-- [ ] Getting CO2 Concentration.
-- [ ] Getting temperature and humidity data from sensor.
+- [x] Getting CO2 Concentration.
+- [x] Getting temperature and humidity data from sensor.
 - [x] Show data with OLED 0.96" 128x64 display
-- [ ] Plug and play sensor
+- [x] Plug and play sensor
 
 ## Component
 
