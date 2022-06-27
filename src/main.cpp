@@ -15,6 +15,43 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 uint16_t co2_data;
 float temp_data;
 float hum_data;
+boolean co2_plug = false;
+void read_data();
+void show_data(void);
+boolean check_co2_sensor();
+void unplug(void);
+
+void setup()
+{
+  Serial.begin(115200);
+
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  { // Address 0x3D for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ;
+  }
+  delay(2000);
+  if (airSensor.begin() == false)
+  {
+    Serial.println("Air sensor not detected. Please check wiring. Freezing...");
+    co2_plug = false;
+  }
+  display.clearDisplay();
+}
+
+void loop()
+{
+  co2_plug = check_co2_sensor();
+  if (co2_plug)
+  {
+    read_data();
+    show_data();
+  }
+  else
+    unplug();
+  delay(1000);
+}
 
 void read_data()
 {
@@ -60,30 +97,24 @@ void show_data(void)
   display.println(" %");
   display.display(); // Show initial text
 }
-
-void setup()
+boolean check_co2_sensor()
 {
-  Serial.begin(115200);
-
-  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
-  { // Address 0x3D for 128x64
-    Serial.println(F("SSD1306 allocation failed"));
-    for (;;)
-      ;
-  }
-  delay(2000);
-  if (airSensor.begin() == false)
+  if (airSensor.isConnected())
   {
-    Serial.println("Air sensor not detected. Please check wiring. Freezing...");
-    while (1)
-      ;
+    return true;
   }
-  display.clearDisplay();
+  return false;
 }
 
-void loop()
+void unplug(void)
 {
-  read_data();
-  show_data();
-  delay(1000);
+  display.clearDisplay();
+  delay(10);
+  display.setTextSize(1); // Draw 2X-scale text
+  display.setTextColor(WHITE);
+  display.setCursor(32, 0);
+  display.println("Monitoring");
+  display.setCursor(10, 35);
+  display.println("Sensor Unplug");
+  display.display(); // Show initial text
 }
