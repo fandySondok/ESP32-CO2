@@ -9,13 +9,16 @@ SCD30 airSensor;
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+/** Declaration for an SSD1306 display connected to I2C (SDA, SCL pins) */
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 uint16_t co2_data;
 float temp_data;
 float hum_data;
-boolean co2_plug = false;
+
+boolean co2_plug = false; // flag
+
+/** Declaration static function */
 void read_data();
 void show_data(void);
 boolean check_co2_sensor();
@@ -53,6 +56,7 @@ void loop()
   delay(1000);
 }
 
+/** Read data from CO2 Sensor */
 void read_data()
 {
   if (airSensor.dataAvailable())
@@ -75,11 +79,12 @@ void read_data()
     Serial.println("Waiting for new data");
 }
 
+/** Show This if Sensor Connected to ESP32 */
 void show_data(void)
 {
   display.clearDisplay();
   delay(10);
-  display.setTextSize(1); // Draw 2X-scale text
+  display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(32, 0);
   display.println("Monitoring");
@@ -95,8 +100,10 @@ void show_data(void)
   display.print("Hum : ");
   display.print(hum_data);
   display.println(" %");
-  display.display(); // Show initial text
+  display.display();
 }
+
+/** Check CO2 Sensor Connection */
 boolean check_co2_sensor()
 {
   if (airSensor.isConnected())
@@ -106,15 +113,16 @@ boolean check_co2_sensor()
   return false;
 }
 
+/** Show This if Sensor Not Connected to ESP32 */
 void unplug(void)
 {
   display.clearDisplay();
   delay(10);
-  display.setTextSize(1); // Draw 2X-scale text
+  display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(32, 0);
   display.println("Monitoring");
-  display.setCursor(10, 35);
-  display.println("Sensor Unplug");
-  display.display(); // Show initial text
+  display.setCursor(5, 35);
+  display.println("Sensor Not Connected");
+  display.display();
 }

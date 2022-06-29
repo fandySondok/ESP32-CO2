@@ -34,4 +34,4 @@ This project was created to monitor indoor CO2 concentration using the SCD30 sen
 
 ## Version
 
-Version 0.0.1
+Version 1.0.1
